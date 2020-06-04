@@ -1,0 +1,29 @@
+[package]
+name = "atomic"
+version = "0.1.0"
+authors = ["nolvalue"]
+edition = "2018"
+
+[dependencies]
+#Basic Webserver Stuff
+rocket = "0.4.4"
+rocket_contrib = { version = "0.4.4", features = ["json", "diesel_mysql_pool"] }
+
+#Logger
+slog = "2.5.2"
+slog-term = "2.6.0"
+slog-async = "2.5.0"
+# Serialization/Deserialization
+serde_json = "1.0.53"
+serde = "1.0.110"
+serde_derive = "1.0.110"
+
+#Database
+diesel = { version = "1.4.4", features = ["postgres"] }
+rust-argon2 = "0.8.2"
+
+#.env File Handler
+dotenv = "0.15.0"
+
+#RNG
+rand = '0.7.3'
