@@ -1,8 +1,11 @@
 table! {
     users (id) {
         id -> Varchar,
-        name -> Text,
-        password -> Text,
-        email -> Text,
+        url -> Nullable<Varchar>,
+        username -> Varchar,
+        first_name -> Nullable<Varchar>,
+        last_name -> Nullable<Varchar>,
+        email -> Nullable<Varchar>,
+        password -> Nullable<Varchar>,
     }
 }
