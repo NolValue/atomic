@@ -3,18 +3,37 @@ use rand::{thread_rng, Rng, distributions::Alphanumeric};
 use diesel::{PgConnection, QueryResult, prelude::*};
 use super::schema::users::{*, dsl::{users}};
 pub mod usermodel;
-use usermodel::UserPublic;
+use usermodel::User;
+use crate::user::usermodel::{UserInsertable, UserAuthable};
 
-pub fn get(uid: String, connection: &PgConnection) -> QueryResult<UserPublic>{
-    users.find(&uid).select((id, url, nickname, first_name, last_name)).first::<UserPublic>(connection)
+pub fn get(uid: String, connection: &PgConnection) -> QueryResult<User>{
+    users.find(&uid).select((id, url, nickname, first_name, last_name)).first::<User>(connection)
 }
 
+pub fn create(user: UserAuthable, connection: &PgConnection) -> usize {
+    diesel::insert_into(users)
+        .values(&UserInsertable::from_authable(user))
+        .execute(connection).unwrap()
+}
 #[derive(Debug, Serialize, Deserialize)]
 pub enum UserErrors {
-    MissingUID,
-    InvalidUID,
-    UnknownInformation,
+    MissingData,
+    InvalidData,
     NoEmailSet,
+    NoPasswordSet,
+    IncorrectSize
+}
+
+pub fn generate_id(length: i64) -> String{
+    const CHARSET: &[u8] = b"1234567890";
+    let mut rng = rand::thread_rng();
+    let pass: String = (0..length)
+        .map(|_| {
+            let idx = rng.gen_range(0, CHARSET.len());
+            CHARSET[idx] as char
+        })
+        .collect();
+    pass
 }
 
 pub fn hash_pass(pass: String) -> String{

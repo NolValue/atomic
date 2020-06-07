@@ -13,11 +13,11 @@ table! {
     users (id) {
         id -> Varchar,
         url -> Nullable<Varchar>,
-        nickname -> Varchar,
+        nickname -> Nullable<Varchar>,
         first_name -> Nullable<Varchar>,
         last_name -> Nullable<Varchar>,
-        email -> Nullable<Varchar>,
-        password -> Nullable<Varchar>,
+        email -> Varchar,
+        password -> Varchar,
     }
 }
 
