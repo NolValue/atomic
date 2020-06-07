@@ -1,6 +1,6 @@
 # Project exclude paths
 /target/
-/.Rocket.toml
+/Rocket.toml
 /.env
 /.idea/
 /.vscode/
