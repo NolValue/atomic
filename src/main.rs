@@ -3,12 +3,14 @@
 #[macro_use] extern crate diesel;
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
-use crate::routes::gen_routes;
+#[macro_use] extern crate chrono;
 
 extern crate argon2;
 mod schema;
 mod routes;
 mod user;
+mod authentication;
+use routes::gen_routes;
 
 
 fn main() {

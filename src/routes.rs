@@ -2,6 +2,7 @@ use crate::user::{UserErrors, hash_pass, get, create};
 use rocket_contrib::json::*;
 use rocket_contrib::databases::diesel;
 use crate::user::usermodel::{User, UserAuthable};
+use crate::authentication::auth_user;
 
 /** Database Struct **/
 #[database("atomic_db")]
@@ -34,12 +35,24 @@ fn user_get_missing() -> JsonValue{
 #[post("/user/create")]
 fn user_create(account: UserAuthable, conn: AtomicDB) -> JsonValue {
     let status = create(account, &*conn);
-    json!({"status": 400, "response": status})
+    match status{
+        0 => json!({"status": 400, "success": status}),
+        1 => json!({"status": 200, "success": status}),
+        _ => json!({"status": 400, "success": "unexpected result"})
+    }
 }
+
+/** Auth Routes **/
+#[get("/auth/login")]
+pub fn auth_login(account: UserAuthable, conn: AtomicDB) -> JsonValue{
+    let auth = auth_user(account, &*conn);
+    json!({"status": 200, "data": auth})
+}
+
 /** Starts Rocket and Mounts Routes. **/
 pub fn gen_routes(){
     rocket::ignite()
-        .mount("/", routes![index, user_get, user_get_missing, test_pass, user_create])
+        .mount("/", routes![index, user_get, user_get_missing, test_pass, user_create, auth_login])
         .attach(AtomicDB::fairing())
         .launch();
 }

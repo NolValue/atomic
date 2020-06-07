@@ -1,4 +1,4 @@
-use argon2::{self, Config};
+use argon2::{self, Config, verify_encoded};
 use rand::{thread_rng, Rng, distributions::Alphanumeric};
 use diesel::{PgConnection, QueryResult, prelude::*};
 use super::schema::users::{*, dsl::{users}};
@@ -25,7 +25,9 @@ pub enum UserErrors {
 }
 
 pub fn generate_id(length: i64) -> String{
-    const CHARSET: &[u8] = b"1234567890";
+    const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+                             abcdefghijklmnopqrstuvwxyz\
+                             1234567890";
     let mut rng = rand::thread_rng();
     let pass: String = (0..length)
         .map(|_| {
@@ -34,6 +36,10 @@ pub fn generate_id(length: i64) -> String{
         })
         .collect();
     pass
+}
+
+pub fn verify_pass(pass: String, hash: String) -> bool{
+    verify_encoded(hash.as_ref(), pass.as_ref()).unwrap()
 }
 
 pub fn hash_pass(pass: String) -> String{

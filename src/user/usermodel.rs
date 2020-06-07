@@ -5,8 +5,8 @@ use rocket::Request;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct UserAuthable{
-    email: String,
-    password: String,
+    pub(crate) email: String,
+    pub(crate) password: String,
 }
 
 #[derive(Queryable, AsChangeset, Serialize, Deserialize)]

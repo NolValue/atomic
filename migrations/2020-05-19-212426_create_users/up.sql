@@ -5,6 +5,6 @@ CREATE TABLE users
     nickname character varying(32),
     first_name character varying(32),
     last_name character varying(32),
-    email character varying(191) NOT NULL,
+    email character varying(191) UNIQUE NOT NULL,
     password character varying(191) NOT NULL
 )
