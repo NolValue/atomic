@@ -1,10 +1,7 @@
 use argon2::{self, Config};
-use rand::{thread_rng, Rng};
-use rand::distributions::Alphanumeric;
-use diesel::{PgConnection, QueryResult};
-use super::schema::users::dsl::{users};
-use super::schema::users::*;
-use diesel::prelude::*;
+use rand::{thread_rng, Rng, distributions::Alphanumeric};
+use diesel::{PgConnection, QueryResult, prelude::*};
+use super::schema::users::{*, dsl::{users}};
 pub mod usermodel;
 use usermodel::UserPublic;
 
