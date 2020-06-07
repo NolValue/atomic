@@ -1,0 +1,2 @@
+[global.databases]
+atomic_db = {url = "postgres://username:password@hostname/atomic"}

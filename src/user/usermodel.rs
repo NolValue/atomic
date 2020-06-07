@@ -1,25 +1,21 @@
-use argon2::{self, Config};
-use rand::{thread_rng, Rng};
-use rand::distributions::Alphanumeric;
+use super::super::schema::users;
 
-#[derive(Queryable, Serialize, Deserialize)]
+#[derive(Queryable, AsChangeset, Serialize, Deserialize)]
+#[table_name = "users"]
 pub struct User{
     id: String,
-    url: String,
-    username: String,
-    first_name: String,
-    last_name: String,
-    email: String,
-    password: String,
+    url: Option<String>,
+    nickname: String,
+    first_name: Option<String>,
+    last_name: Option<String>,
+    email: Option<String>,
+    password: Option<String>,
 }
-
-impl User{
-    fn hash_pass(password: String) -> String{
-        let salt: String = thread_rng().sample_iter(&Alphanumeric).take(64).collect();
-        let config= Config::default();
-        argon2::hash_encoded(password.as_ref(), salt.as_ref(), &config).unwrap()
-    }
-    fn verify_pass(&self, password: String) -> bool{
-        argon2::verify_encoded(&self.password, password.as_ref()).unwrap()
-    }
+#[derive(Queryable, Serialize, Deserialize)]
+pub struct UserPublic{
+    id: String,
+    url: Option<String>,
+    nickname: String,
+    first_name: Option<String>,
+    last_name: Option<String>
 }
