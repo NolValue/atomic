@@ -2,6 +2,8 @@ use super::super::schema::users;
 use crate::user::{hash_pass, generate_id, UserErrors};
 use rocket::request::{FromRequest, Outcome};
 use rocket::Request;
+use rocket::http::Status;
+use rocket_contrib::json::JsonValue;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct UserAuthable{
@@ -35,13 +37,22 @@ impl UserInsertable{
         }
     }
 }
-
+pub fn valid_json(json: String) -> bool {
+    match serde_json::from_str::<JsonValue>(json.as_ref()){
+        Ok(_e) => true,
+        Err(_e) => false
+    }
+}
 impl<'a, 'r> FromRequest<'a, 'r> for UserAuthable {
     type Error = UserErrors;
 
     fn from_request(request: &'a Request<'r>) -> Outcome<Self, Self::Error> {
         let keys: Vec<_> = request.headers().get("data").collect();
-        let user = serde_json::from_str::<UserAuthable>(keys[0].to_string().as_ref()).unwrap();
-        Outcome::Success(user)
+        match keys.len() {
+            0 => Outcome::Failure((Status::BadRequest,UserErrors::MissingData)),
+            1 if valid_json(keys[0].to_string()) => Outcome::Success(serde_json::from_str::<UserAuthable>(keys[0].to_string().as_ref()).unwrap()),
+            1 => Outcome::Failure((Status::BadRequest, UserErrors::InvalidData)),
+            _ => Outcome::Failure((Status::BadRequest, UserErrors::IncorrectSize))
+        }
     }
 }

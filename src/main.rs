@@ -4,7 +4,6 @@
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
 extern crate chrono;
-
 extern crate argon2;
 mod schema;
 mod routes;

@@ -2,7 +2,11 @@ use crate::user::{UserErrors, hash_pass, get, create};
 use rocket_contrib::json::*;
 use rocket_contrib::databases::diesel;
 use crate::user::usermodel::{User, UserAuthable};
-use crate::authentication::auth_user;
+use crate::authentication::{auth_user, refresh_auth, validate_auth};
+use rocket::http::{Cookie, Cookies};
+use chrono::Duration;
+use std::borrow::Borrow;
+use crate::authentication::authmodel::AuthSerializable;
 
 /** Database Struct **/
 #[database("atomic_db")]
@@ -43,10 +47,21 @@ fn user_create(account: UserAuthable, conn: AtomicDB) -> JsonValue {
 }
 
 /** Auth Routes **/
-#[get("/auth/login")]
-pub fn auth_login(account: UserAuthable, conn: AtomicDB) -> JsonValue{
-    let auth = auth_user(account, &*conn);
-    json!({"status": 200, "data": auth})
+#[post("/auth/login")]
+pub fn auth_login(mut cookies: Cookies, account: UserAuthable, conn: AtomicDB) -> JsonValue{
+    let mut auth;
+    match cookies.get("session-token"){
+        Some(cookie) => match validate_auth(cookie.value().to_string(), &*conn){
+            true => auth = AuthSerializable{ uid: "".to_string(), access_token: cookies.get("session-token").unwrap().value().to_string(), refresh_token: cookies.get("refresh-token").unwrap().value().to_string() },
+            false => auth = refresh_auth(cookie.value().to_string(), &*conn)
+        },
+        None => auth = auth_user(account, &*conn)
+    }
+    let session = Cookie::build("session-token", auth.access_token).secure(false).max_age(Duration::days(7)).http_only(true).finish();
+    let refresh = Cookie::build("refresh-token", auth.refresh_token).secure(false).max_age(Duration::max_value()).http_only(true).finish();
+    cookies.add(session);
+    cookies.add(refresh);
+    json!({"status": 200})
 }
 
 /** Starts Rocket and Mounts Routes. **/

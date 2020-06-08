@@ -7,9 +7,15 @@ pub enum _Scopes{
 
 #[derive(Serialize, Deserialize)]
 pub struct Auth{
+    pub refresh_token: String,
+    pub access_token: String
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct AuthSerializable {
     pub uid: String,
     pub refresh_token: String,
-    pub access_token: String,
+    pub access_token: String
 }
 
 #[derive(Insertable)]
@@ -30,7 +36,7 @@ pub fn week() -> NaiveDateTime {
 }
 
 impl AuthInsertable{
-    pub fn from_auth(auth: &Auth) -> AuthInsertable{
+    pub fn from_auth(auth: &AuthSerializable) -> AuthInsertable{
         AuthInsertable{
             id: generate_id(27),
             uid: (&auth.uid).parse().unwrap(),
@@ -40,3 +46,4 @@ impl AuthInsertable{
         }
     }
 }
+
