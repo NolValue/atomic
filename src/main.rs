@@ -3,7 +3,7 @@
 #[macro_use] extern crate diesel;
 #[macro_use] extern crate rocket_contrib;
 #[macro_use] extern crate serde_derive;
-#[macro_use] extern crate chrono;
+extern crate chrono;
 
 extern crate argon2;
 mod schema;

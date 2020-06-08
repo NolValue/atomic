@@ -1,8 +1,7 @@
 use chrono::{NaiveDateTime, DateTime, Local, Duration};
 use crate::user::generate_id;
-use std::ops::Add;
 use super::super::schema::auths;
-pub enum Scopes{
+pub enum _Scopes{
     Unimplemented
 }
 

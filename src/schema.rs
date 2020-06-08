@@ -5,7 +5,6 @@ table! {
         refresh_token -> Nullable<Varchar>,
         access_token -> Nullable<Varchar>,
         auth_expiry -> Nullable<Timestamp>,
-        scopes -> Nullable<Int4>,
     }
 }
 
