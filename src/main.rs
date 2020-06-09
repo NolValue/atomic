@@ -8,7 +8,7 @@ extern crate argon2;
 mod schema;
 mod routes;
 mod user;
-mod authentication;
+mod auth;
 use routes::gen_routes;
 
 
