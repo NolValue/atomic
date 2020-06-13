@@ -1,7 +1,7 @@
-use rocket_contrib::json::*;
-use rocket_contrib::databases::diesel;
 use super::user;
 use diesel::result::Error;
+use rocket_contrib::databases::diesel;
+use rocket_contrib::json::*;
 
 /** Database Struct **/
 #[database("atomic_db")]
@@ -14,7 +14,7 @@ fn index() -> &'static str {
 }
 
 #[get("/test/<pass>")]
-fn test_pass(pass: String) -> String{
+fn test_pass(pass: String) -> String {
     pass
 }
 
@@ -27,13 +27,12 @@ fn user_get(uid: String, conn: AtomicDB) -> Result<JsonValue, Error> {
 }
 
 #[get("/user/get")]
-fn user_get_missing() -> JsonValue{
+fn user_get_missing() -> JsonValue {
     json!({"status": 400})
 }
 
-
 /** Starts Rocket and Mounts Routes. **/
-pub fn gen_routes(){
+pub fn gen_routes() {
     rocket::ignite()
         .mount("/", routes![index, user_get, user_get_missing, test_pass])
         .attach(AtomicDB::fairing())
