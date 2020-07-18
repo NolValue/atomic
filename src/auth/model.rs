@@ -1,5 +1,4 @@
 use crate::schema::auths;
-use crate::user::model::User;
 use crate::utils::*;
 use rocket_contrib::json::JsonValue;
 

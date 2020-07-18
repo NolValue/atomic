@@ -1,4 +1,5 @@
 pub mod model;
+pub mod routes;
 use super::schema::users::dsl::*;
 use diesel::{ExpressionMethods, PgConnection, QueryDsl, QueryResult, RunQueryDsl};
 use model::{User, UserLogin};
