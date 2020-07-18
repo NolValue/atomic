@@ -13,6 +13,7 @@ mod auth;
 mod routes;
 mod schema;
 mod user;
+mod utils;
 use routes::gen_routes;
 
 fn main() {

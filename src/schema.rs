@@ -1,10 +1,11 @@
 table! {
     auths (id) {
         id -> Varchar,
-        uid -> Nullable<Varchar>,
-        refresh_token -> Nullable<Varchar>,
-        access_token -> Nullable<Varchar>,
-        auth_expiry -> Nullable<Timestamp>,
+        uid -> Varchar,
+        refresh_token -> Varchar,
+        access_token -> Varchar,
+        auth_expiry -> Timestamp,
+        nickname -> Nullable<Varchar>,
     }
 }
 
