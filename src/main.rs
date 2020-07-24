@@ -9,6 +9,8 @@ extern crate rocket_contrib;
 extern crate serde_derive;
 extern crate argon2;
 extern crate chrono;
+#[macro_use]
+extern crate lazy_static;
 mod auth;
 mod routes;
 mod schema;

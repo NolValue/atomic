@@ -1,4 +1,5 @@
 pub mod model;
+pub mod routes;
 use super::schema::auths::dsl::*;
 use super::user::model::User;
 use crate::utils::{gen_id, set_timer_days};

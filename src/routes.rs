@@ -1,6 +1,8 @@
+use crate::auth;
 use crate::user;
-use crate::utils::gen_id;
+use crate::utils::{gen_id, set_timer_days, test_replace};
 use rocket::config::Environment;
+use rocket::response::content::Html;
 use rocket::{Config, Rocket, Route};
 
 /** Database Struct **/
@@ -14,29 +16,26 @@ fn index() -> &'static str {
 }
 
 #[get("/test")]
-fn test_gen_id() -> String {
-    gen_id(17)
+fn test_gen_id() -> /*Html<String>*/ String {
+    //Html(test_replace())
+    test_replace()
 }
-
 /** Starts Rocket and Mounts Routes. **/
 pub fn gen_routes() {
-    let mut config = Config::new(Environment::Production);
-    #[cfg(feature = "prod")]
-    {
-        config = Config::new(Environment::Production);
-    }
-    #[cfg(feature = "staging")]
-    {
-        config = Config::new(Environment::Staging);
-    }
-    let app = rocket::custom(config);
     let mut routes = routes!(index, test_gen_id);
-    routes.append(&mut routes!(user::routes::get, user::routes::login));
+    routes.append(&mut routes!(user::routes::get, user::routes::create));
+    routes.append(&mut routes!(auth::routes::login, auth::routes::refresh));
     #[cfg(feature = "communities")]
-    routes.append(&mut routes!(UNUSED!));
+    routes.append(&mut routes!(/* Unused */));
     #[cfg(feature = "collections")]
-    routes.append(&mut routes!(UNUSED!));
+    routes.append(&mut routes!(/* Unused */));
     #[cfg(feature = "messages")]
-    routes.append(&mut routes!(UNUSED!));
-    app.mount("/", routes).launch();
+    routes.append(&mut routes!(/* Unused */));
+    /*app.mount("/", routes)
+    .attach(AtomicDB::fairing())
+    .launch();new(Environment::Development)*/
+    rocket::ignite()
+        .mount("/", routes)
+        .attach(AtomicDB::fairing())
+        .launch();
 }
