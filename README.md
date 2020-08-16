@@ -13,36 +13,9 @@ Atomic uses these crates in order to function:
 * [Serde](https://crates.io/crates/serde) - A JSON Serialization/Deserialization framework.
 * [Rand](https://crates.io/crates/rand) - A simple Random Number Generaation crate.
 
-
-### Installation
-Atomic requires Rust Nightly and a PostgreSQL Database in order to function.
-```sh
-rustup toolchain install nightly
-```
-Configure your database in your Rocket.toml and .env files.
-```toml
-[global.databases]
-atomic_db = {url = "postgres://username:password@host/database"}
-```
-```.env
-DATABASE_URL=postgres://username:password@host/database
-```
-Install and run DieselCLI to configure database.
-```
-cargo install diesel_cli --no-default-features --features postgres
-```
-```
-diesel setup
-```
-```
-diesel run
-```
-And thats it! Now you can run and build using Cargo Build or Cargo Run respectively.
-
-
 ### Todos
 
- - Finish Auth System
+ - Finish Auth/Login System (25% complete)
  - Add Post Creation
  - Private Messaging(?)
 
