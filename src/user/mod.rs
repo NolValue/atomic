@@ -10,8 +10,7 @@ pub fn get_by_id(uid: String, conn: &PgConnection) -> QueryResult<User> {
 }
 
 pub fn get_by_login(ul: UserLogin, conn: &PgConnection) -> Result<User, String> {
-    let usr: QueryResult<User> = users.filter(email.eq(ul.address)).first::<User>(&*conn);
-    match usr {
+    match users.filter(email.eq(ul.address)).first::<User>(&*conn){
         Ok(u) if { u.clone().verify_pass(ul.password) } => Ok(u),
         _ => return Err("Failure".to_string()),
     }
@@ -25,5 +24,13 @@ pub fn create_user(ul: UserLogin, conn: &PgConnection) -> String {
     match diesel::insert_into(users).values(ul).execute(conn) {
         Ok(a) => "success".to_string(),
         Err(e) => e.to_string(),
+    }
+}
+
+pub fn delete_user(uid: String, conn:&PgConnection) -> bool {
+    let rslt = diesel::delete(users.filter(id.eq(uid))).execute(&*conn).unwrap();
+    match rslt{
+        1 => true,
+        _ => false
     }
 }

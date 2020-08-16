@@ -23,8 +23,8 @@ fn test_gen_id() -> /*Html<String>*/ String {
 /** Starts Rocket and Mounts Routes. **/
 pub fn gen_routes() {
     let mut routes = routes!(index, test_gen_id);
-    routes.append(&mut routes!(user::routes::get, user::routes::create));
-    routes.append(&mut routes!(auth::routes::login, auth::routes::refresh));
+    routes.append(&mut routes!(user::routes::get, user::routes::create, user::routes::delete));
+    routes.append(&mut routes!(auth::routes::login, auth::routes::refresh, auth::routes::validate));
     #[cfg(feature = "communities")]
     routes.append(&mut routes!(/* Unused */));
     #[cfg(feature = "collections")]
