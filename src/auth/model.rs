@@ -3,7 +3,7 @@ use crate::utils::*;
 use rocket_contrib::json::JsonValue;
 use rocket::request::{FromRequest, Outcome};
 use rocket::{Request, request, State};
-use crate::auth::{get_uid, validate_auth};
+use crate::auth::{get_uid, validate_auth, validate_refresh};
 use diesel::PgConnection;
 use rocket::http::Status;
 use crate::routes::AtomicDB;
@@ -59,6 +59,28 @@ impl Session{
     }
 }
 
+impl<'a, 'r> FromRequest<'a, 'r> for SessionFull{
+    type Error = SessionError;
+
+    fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
+        let cookies = request.cookies();
+        let conn = request.guard::<AtomicDB>().unwrap();
+        let session = match cookies.get("x-bearer-token"){
+            Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => c.value().to_string(),
+            Some(c) => return Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
+            None => return Outcome::Failure((Status::BadRequest, SessionError::Missing))
+        };
+        let refresh = match cookies.get("refresh_token"){
+            Some(c) if validate_refresh(c.clone().value().to_string(), &*conn) => c.value().to_string(),
+            Some(c) => return Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
+            None => return Outcome::Failure((Status::BadRequest, SessionError::Missing))
+        };
+        Outcome::Success(SessionFull{
+            access_token: session,
+            refresh_token: refresh
+        })
+    }
+}
 impl<'a, 'r> FromRequest<'a, 'r> for Session {
     type Error = SessionError;
 
@@ -68,8 +90,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for Session {
         match cookies.get("x-bearer-token"){
             Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => Outcome::Success(Session(c.value().to_string())),
             Some(c) => Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
-            None => Outcome::Failure((Status::BadRequest, SessionError::Missing)),
-            _ => Outcome::Failure((Status::BadRequest, SessionError::Missing))
+            None => Outcome::Failure((Status::BadRequest, SessionError::Missing))
         }
     }
 }

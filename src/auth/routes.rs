@@ -5,8 +5,8 @@ use crate::user::model::UserLogin;
 use rocket::http::{Cookie, Cookies};
 use rocket::request::Form;
 use rocket_contrib::json::JsonValue;
-use crate::auth::{validate_auth, get_uid};
-use crate::auth::model::Session;
+use crate::auth::{validate_auth, get_uid, update_auth, delete_auth};
+use crate::auth::model::{Session, SessionFull};
 
 #[post("/auth/login", data = "<user>")]
 pub fn login(user: Form<UserLogin>, conn: AtomicDB, mut cookies: Cookies) -> JsonValue {
@@ -23,10 +23,9 @@ pub fn login(user: Form<UserLogin>, conn: AtomicDB, mut cookies: Cookies) -> Jso
             .path("/")
             .finish();
         let refresh = Cookie::build("refresh_token", auth.refresh_token)
-            .secure(true)
-            .path("/auth/refresh")
+            .http_only(true)
+            .path("/auth")
             .finish();
-        cookies.remove(Cookie::named("x-bearer-token"));
         cookies.add(session);
         cookies.add(refresh);
         status = 200
@@ -34,9 +33,30 @@ pub fn login(user: Form<UserLogin>, conn: AtomicDB, mut cookies: Cookies) -> Jso
     json!({ "status": status })
 }
 
+#[post("/auth/logout")]
+pub fn logout(session: Session, conn: AtomicDB, mut cookies: Cookies){
+    let access = Cookie::build("x-bearer-token", "null")
+        .http_only(true)
+        .path("/")
+        .finish();
+    let refresh = Cookie::build("refresh_token", "null")
+        .http_only(true)
+        .path("/auth")
+        .finish();
+    cookies.remove(access.clone());
+    cookies.remove(refresh.clone());
+    delete_auth(session.0, &*conn);
+}
+
 #[post("/auth/refresh")]
-pub fn refresh() {
+pub fn refresh(session: SessionFull, conn: AtomicDB, mut cookies: Cookies) {
     /*Unused!*/
+    let token = update_auth(session, &*conn);
+    let access = Cookie::build("x-bearer-token", token)
+        .http_only(true)
+        .path("/")
+        .finish();
+    cookies.add(access);
 }
 
 

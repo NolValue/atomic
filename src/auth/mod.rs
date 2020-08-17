@@ -19,15 +19,13 @@ pub fn get_uid(sess: String, conn: &PgConnection) -> String {
     auths.filter(access_token.eq(sess)).select(uid).first::<String>(conn).unwrap()
 }
 
-pub fn update_auth(session: SessionFull, conn: &PgConnection) -> Result<String, SessionError>{
+pub fn update_auth(session: SessionFull, conn: &PgConnection) -> String{
     let newid = gen_id(36);
-    match diesel::update(auths.filter(refresh_token.eq(session.refresh_token))).set((
+    let rslt = diesel::update(auths.filter(refresh_token.eq(session.refresh_token))).set((
         access_token.eq(newid.clone()),
         auth_expiry.eq(set_timer_days(7)),
-    )).execute(&*conn){
-        Ok(t) => Ok(newid),
-        Err(e) => Err(SessionError::Invalid)
-    }
+    )).execute(&*conn);
+    newid
 }
 
 pub fn validate_auth(access: String, conn: &PgConnection) -> bool{
@@ -37,6 +35,15 @@ pub fn validate_auth(access: String, conn: &PgConnection) -> bool{
         _ => false
     }
 }
+
+pub fn validate_refresh(refresh: String, conn: &PgConnection) -> bool{
+    let auth = auths.filter(refresh_token.eq(refresh)).first::<Auth>(&*conn);
+    match auth {
+        Ok(a) => true,
+        _ => false
+    }
+}
+
 
 pub fn delete_auth(access: String, conn:&PgConnection) -> bool {
     let rslt = diesel::delete(auths.filter(access_token.eq(access))).execute(&*conn).unwrap();
