@@ -1,12 +1,12 @@
+use crate::auth::{get_uid, validate_auth, validate_refresh};
+use crate::routes::AtomicDB;
 use crate::schema::auths;
 use crate::utils::*;
-use rocket_contrib::json::JsonValue;
-use rocket::request::{FromRequest, Outcome};
-use rocket::{Request, request, State};
-use crate::auth::{get_uid, validate_auth, validate_refresh};
 use diesel::PgConnection;
 use rocket::http::Status;
-use crate::routes::AtomicDB;
+use rocket::request::{FromRequest, Outcome};
+use rocket::{request, Request, State};
+use rocket_contrib::json::JsonValue;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Session(pub String);
@@ -50,8 +50,8 @@ impl Auth {
     }
 }
 
-impl Session{
-    pub fn get_uid(self, conn: &PgConnection) -> String{
+impl Session {
+    pub fn get_uid(self, conn: &PgConnection) -> String {
         get_uid(self.0, &*conn)
     }
     pub fn is_valid(self, conn: &PgConnection) -> bool {
@@ -59,25 +59,29 @@ impl Session{
     }
 }
 
-impl<'a, 'r> FromRequest<'a, 'r> for SessionFull{
+impl<'a, 'r> FromRequest<'a, 'r> for SessionFull {
     type Error = SessionError;
 
     fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
         let cookies = request.cookies();
         let conn = request.guard::<AtomicDB>().unwrap();
-        let session = match cookies.get("x-bearer-token"){
-            Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => c.value().to_string(),
+        let session = match cookies.get("x-bearer-token") {
+            Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => {
+                c.value().to_string()
+            }
             Some(c) => return Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
-            None => return Outcome::Failure((Status::BadRequest, SessionError::Missing))
+            None => return Outcome::Failure((Status::BadRequest, SessionError::Missing)),
         };
-        let refresh = match cookies.get("refresh_token"){
-            Some(c) if validate_refresh(c.clone().value().to_string(), &*conn) => c.value().to_string(),
+        let refresh = match cookies.get("refresh_token") {
+            Some(c) if validate_refresh(c.clone().value().to_string(), &*conn) => {
+                c.value().to_string()
+            }
             Some(c) => return Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
-            None => return Outcome::Failure((Status::BadRequest, SessionError::Missing))
+            None => return Outcome::Failure((Status::BadRequest, SessionError::Missing)),
         };
-        Outcome::Success(SessionFull{
+        Outcome::Success(SessionFull {
             access_token: session,
-            refresh_token: refresh
+            refresh_token: refresh,
         })
     }
 }
@@ -87,10 +91,12 @@ impl<'a, 'r> FromRequest<'a, 'r> for Session {
     fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
         let cookies = request.cookies();
         let conn = request.guard::<AtomicDB>().unwrap();
-        match cookies.get("x-bearer-token"){
-            Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => Outcome::Success(Session(c.value().to_string())),
+        match cookies.get("x-bearer-token") {
+            Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => {
+                Outcome::Success(Session(c.value().to_string()))
+            }
             Some(c) => Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
-            None => Outcome::Failure((Status::BadRequest, SessionError::Missing))
+            None => Outcome::Failure((Status::BadRequest, SessionError::Missing)),
         }
     }
 }

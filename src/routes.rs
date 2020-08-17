@@ -16,15 +16,24 @@ fn index() -> &'static str {
 }
 
 #[get("/test")]
-fn test_gen_id() -> /*Html<String>*/ String {
+fn test_gen_id() -> String {
     //Html(test_replace())
     test_replace()
 }
 /** Starts Rocket and Mounts Routes. **/
 pub fn gen_routes() {
     let mut routes = routes!(index, test_gen_id);
-    routes.append(&mut routes!(user::routes::get, user::routes::create, user::routes::delete));
-    routes.append(&mut routes!(auth::routes::login, auth::routes::refresh, auth::routes::validate, auth::routes::logout));
+    routes.append(&mut routes!(
+        user::routes::get,
+        user::routes::create,
+        user::routes::delete
+    ));
+    routes.append(&mut routes!(
+        auth::routes::login,
+        auth::routes::refresh,
+        auth::routes::validate,
+        auth::routes::logout
+    ));
     #[cfg(feature = "communities")]
     routes.append(&mut routes!(/* Unused */));
     #[cfg(feature = "collections")]

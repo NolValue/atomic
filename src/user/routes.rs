@@ -1,13 +1,13 @@
 use super::get_by_id;
 use super::get_by_login;
 use super::model::UserLogin;
-use crate::auth::{gen_auth, delete_auth, delete_auth_by_user};
+use crate::auth::model::Session;
+use crate::auth::{delete_auth, delete_auth_by_user, gen_auth};
 use crate::routes::AtomicDB;
 use crate::user::{create_user, delete_user};
 use diesel::result::Error;
 use rocket::request::Form;
 use rocket_contrib::json::JsonValue;
-use crate::auth::model::Session;
 
 /** User Routes. **/
 #[get("/user/get/<uid>")]

@@ -1,12 +1,12 @@
 use super::gen_auth;
+use crate::auth::model::{Session, SessionFull};
+use crate::auth::{delete_auth, get_uid, update_auth, validate_auth};
 use crate::routes::AtomicDB;
 use crate::user::get_by_login;
 use crate::user::model::UserLogin;
 use rocket::http::{Cookie, Cookies};
 use rocket::request::Form;
 use rocket_contrib::json::JsonValue;
-use crate::auth::{validate_auth, get_uid, update_auth, delete_auth};
-use crate::auth::model::{Session, SessionFull};
 
 #[post("/auth/login", data = "<user>")]
 pub fn login(user: Form<UserLogin>, conn: AtomicDB, mut cookies: Cookies) -> JsonValue {
@@ -34,7 +34,7 @@ pub fn login(user: Form<UserLogin>, conn: AtomicDB, mut cookies: Cookies) -> Jso
 }
 
 #[post("/auth/logout")]
-pub fn logout(session: Session, conn: AtomicDB, mut cookies: Cookies){
+pub fn logout(session: Session, conn: AtomicDB, mut cookies: Cookies) {
     let access = Cookie::build("x-bearer-token", "null")
         .http_only(true)
         .path("/")
@@ -58,7 +58,6 @@ pub fn refresh(session: SessionFull, conn: AtomicDB, mut cookies: Cookies) {
         .finish();
     cookies.add(access);
 }
-
 
 #[get("/auth/valid")]
 pub fn validate(sess: Session, conn: AtomicDB) -> String {
