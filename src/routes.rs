@@ -26,7 +26,8 @@ pub fn gen_routes() {
     routes.append(&mut routes!(
         user::routes::get,
         user::routes::create,
-        user::routes::delete
+        user::routes::delete,
+        user::routes::update
     ));
     routes.append(&mut routes!(
         auth::routes::login,
