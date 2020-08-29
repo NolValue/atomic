@@ -6,7 +6,7 @@ use crate::user::get_by_login;
 use crate::user::model::UserLogin;
 use rocket::http::{Cookie, Cookies};
 use rocket::request::Form;
-use rocket_contrib::json::{JsonValue, Json};
+use rocket_contrib::json::{Json, JsonValue};
 
 #[post("/auth/login", format = "json", data = "<user>")]
 pub fn login(user: Json<UserLogin>, conn: AtomicDB, mut cookies: Cookies) -> JsonValue {

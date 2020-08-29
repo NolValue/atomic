@@ -4,11 +4,11 @@ use super::model::UserLogin;
 use crate::auth::model::Session;
 use crate::auth::{delete_auth, delete_auth_by_user, gen_auth};
 use crate::routes::AtomicDB;
+use crate::user::model::UserAlterable;
 use crate::user::{create_user, delete_user, update_user};
 use diesel::result::Error;
 use rocket::request::Form;
-use rocket_contrib::json::{JsonValue, Json};
-use crate::user::model::UserAlterable;
+use rocket_contrib::json::{Json, JsonValue};
 
 /** User Routes. **/
 #[get("/user/get/<uid>")]
@@ -18,7 +18,7 @@ pub fn get(uid: String, conn: AtomicDB) -> Result<JsonValue, Error> {
         .map_err(|error| error)
 }
 
-#[post("/user",  format = "json", data = "<ul>")]
+#[post("/user", format = "json", data = "<ul>")]
 pub fn create(ul: Json<UserLogin>, conn: AtomicDB) -> JsonValue {
     let str = create_user(ul.0, &*conn);
     json!({ "status": str })
