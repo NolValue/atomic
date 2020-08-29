@@ -15,11 +15,13 @@ Atomic uses these crates in order to function:
 
 ### Todos
 
- - Finish Auth/Login System (25% complete)
- - Add Post Creation
- - Private Messaging(?)
+ - Auth/Login System (100% complete)
+ - Add Post Creation (WIP)
+ - Feed Generation 
+ - File Uploads
+ - Optimizations and Cleaning for 1.0 Release
 
 License
 ----
 
-Atomic is currently licensed under the GPLv3 License.
+Atomic is currently licensed under the GPLv3 License. See LICENSE file for more information.
