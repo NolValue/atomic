@@ -10,14 +10,14 @@ rocket = "0.4.5"
 cookie = { version = "0.14", features = ["secure"] }
 
 # Serialization/Deserialization
-serde_json ={ version = "1.0.53", features = ["preserve_order"] }
-serde = "1.0.110"
-serde_derive = "1.0.110"
+serde_json ={ version = "1.0.57", features = ["preserve_order"] }
+serde = "1.0.115"
+serde_derive = "1.0.115"
 
 #Database
 diesel = { version = "1.4.4", features = ["postgres", "chrono"] }
 rust-argon2 = "0.8.2"
-chrono = "0.4.2"
+chrono = {version = "0.4.15", features = ["serde"] }
 
 #RNG
 rand = '0.7.3'

@@ -12,7 +12,5 @@ CREATE TABLE posts
     comments bool default (true),
     poster character varying (23) REFERENCES users NOT NULL,
     content text NOT NULL,
-    --Unused for current versions. File uploads should be supported in 1.0.
-    media json,
     created_on timestamp NOT NULL
 )

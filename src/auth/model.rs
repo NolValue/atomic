@@ -5,7 +5,7 @@ use crate::utils::*;
 use diesel::PgConnection;
 use rocket::http::Status;
 use rocket::request::{FromRequest, Outcome};
-use rocket::{request, Request, State};
+use rocket::{request, Request};
 use rocket_contrib::json::JsonValue;
 
 #[derive(Serialize, Deserialize, Clone)]
@@ -19,7 +19,6 @@ pub struct SessionFull {
 
 #[derive(Debug)]
 pub enum SessionError {
-    BadCount,
     Missing,
     Invalid,
 }
@@ -54,9 +53,6 @@ impl Session {
     pub fn get_uid(self, conn: &PgConnection) -> String {
         get_uid(self.0, &*conn)
     }
-    pub fn is_valid(self, conn: &PgConnection) -> bool {
-        validate_auth(self.0, conn)
-    }
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for SessionFull {
@@ -69,14 +65,14 @@ impl<'a, 'r> FromRequest<'a, 'r> for SessionFull {
             Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => {
                 c.value().to_string()
             }
-            Some(c) => return Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
+            Some(_c) => return Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
             None => return Outcome::Failure((Status::BadRequest, SessionError::Missing)),
         };
         let refresh = match cookies.get("refresh_token") {
             Some(c) if validate_refresh(c.clone().value().to_string(), &*conn) => {
                 c.value().to_string()
             }
-            Some(c) => return Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
+            Some(_c) => return Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
             None => return Outcome::Failure((Status::BadRequest, SessionError::Missing)),
         };
         Outcome::Success(SessionFull {
@@ -95,7 +91,7 @@ impl<'a, 'r> FromRequest<'a, 'r> for Session {
             Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => {
                 Outcome::Success(Session(c.value().to_string()))
             }
-            Some(c) => Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
+            Some(_c) => Outcome::Failure((Status::Unauthorized, SessionError::Invalid)),
             None => Outcome::Failure((Status::BadRequest, SessionError::Missing)),
         }
     }

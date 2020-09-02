@@ -3,8 +3,6 @@ use chrono::*;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use regex::Regex;
-use std::borrow::Cow;
-use std::ops::{Add, Deref};
 
 pub fn gen_id(length: usize) -> String {
     let mut rng = rand::thread_rng();
@@ -28,7 +26,7 @@ pub fn hash_pass(password: String) -> String {
 }
 
 pub fn test_replace() -> String {
-    let mut str = r#"<This> &is \**A* _test_"#;
+    let str = r#"<This> &is \**A* _test_"#;
     md_parse(html_parse(str).as_str())
 }
 

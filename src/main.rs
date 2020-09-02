@@ -16,6 +16,7 @@ mod routes;
 mod schema;
 mod user;
 mod utils;
+mod posts;
 use routes::gen_routes;
 
 fn main() {

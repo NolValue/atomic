@@ -10,6 +10,23 @@ table! {
 }
 
 table! {
+    follows (source) {
+        source -> Varchar,
+        target -> Nullable<Varchar>,
+        created_on -> Nullable<Timestamp>,
+    }
+}
+
+table! {
+    media (id) {
+        id -> Varchar,
+        post -> Nullable<Varchar>,
+        content_type -> Nullable<Int2>,
+        content -> Nullable<Json>,
+    }
+}
+
+table! {
     posts (id) {
         id -> Varchar,
         source_type -> Nullable<Int2>,
@@ -19,7 +36,6 @@ table! {
         comments -> Nullable<Bool>,
         poster -> Varchar,
         content -> Text,
-        media -> Nullable<Json>,
         created_on -> Timestamp,
     }
 }
@@ -39,4 +55,10 @@ table! {
 joinable!(auths -> users (uid));
 joinable!(posts -> users (poster));
 
-allow_tables_to_appear_in_same_query!(auths, posts, users,);
+allow_tables_to_appear_in_same_query!(
+    auths,
+    follows,
+    media,
+    posts,
+    users,
+);

@@ -1,9 +1,6 @@
 use crate::auth;
 use crate::user;
-use crate::utils::{gen_id, set_timer_days, test_replace};
-use rocket::config::Environment;
-use rocket::response::content::Html;
-use rocket::{Config, Rocket, Route};
+use crate::utils::test_replace;
 
 /** Database Struct **/
 #[database("atomic_db")]

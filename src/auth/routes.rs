@@ -1,11 +1,10 @@
 use super::gen_auth;
 use crate::auth::model::{Session, SessionFull};
-use crate::auth::{delete_auth, get_uid, update_auth, validate_auth};
+use crate::auth::{delete_auth, get_uid, update_auth};
 use crate::routes::AtomicDB;
 use crate::user::get_by_login;
 use crate::user::model::UserLogin;
 use rocket::http::{Cookie, Cookies};
-use rocket::request::Form;
 use rocket_contrib::json::{Json, JsonValue};
 
 #[post("/auth/login", format = "json", data = "<user>")]

@@ -1,9 +1,6 @@
 use crate::schema::users;
-use crate::schema::users::columns::password;
 use crate::utils::hash_pass;
-use argon2::{hash_encoded, verify_encoded, Config};
-use rand::distributions::Alphanumeric;
-use rand::{thread_rng, Rng};
+use argon2::verify_encoded;
 use rocket_contrib::json::JsonValue;
 
 #[derive(Serialize, Deserialize)]
