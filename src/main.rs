@@ -19,6 +19,10 @@ mod utils;
 mod posts;
 use routes::gen_routes;
 
-fn main() {
-    gen_routes();
+#[rocket::main]
+async fn main() {
+    if let Err(e) = gen_routes().launch().await {
+        println!("Failure to launch!");
+        println!("Error: {:?}", e);
+    };
 }

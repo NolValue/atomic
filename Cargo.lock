@@ -94,6 +94,12 @@ dependencies = [
 
 [[package]]
 name = "atomic"
+version = "0.4.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "64f46ca51dca4837f1520754d1c8c36636356b81553d928dc9c177025369a06e"
+
+[[package]]
+name = "atomic-serv"
 version = "0.1.0"
 dependencies = [
  "chrono",
@@ -108,12 +114,6 @@ dependencies = [
  "serde_derive",
  "serde_json",
 ]
-
-[[package]]
-name = "atomic"
-version = "0.4.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "64f46ca51dca4837f1520754d1c8c36636356b81553d928dc9c177025369a06e"
 
 [[package]]
 name = "atty"
@@ -1043,7 +1043,7 @@ version = "0.5.0-dev"
 source = "git+https://github.com/SergioBenitez/Rocket#f976c15c2515469d9a48753a6c08a1f698da44be"
 dependencies = [
  "async-trait",
- "atomic 0.4.6",
+ "atomic",
  "atty",
  "binascii",
  "cookie",

@@ -1,5 +1,5 @@
 [package]
-name = "atomic"
+name = "atomic-serv"
 version = "0.1.0"
 authors = ["nolvalue"]
 edition = "2018"

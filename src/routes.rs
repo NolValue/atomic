@@ -18,7 +18,7 @@ async fn test_gen_id() -> String {
     test_replace()
 }
 /** Starts Rocket and Mounts Routes. **/
-pub async fn gen_routes() {
+pub fn gen_routes() -> rocket::Rocket {
     let mut routes = routes!(index, test_gen_id);
     routes.append(&mut routes!(
         user::routes::get,
@@ -44,5 +44,4 @@ pub async fn gen_routes() {
     rocket::ignite()
         .mount("/", routes)
         .attach(AtomicDB::fairing())
-        .launch();
 }
