@@ -55,12 +55,14 @@ impl Session {
     }
 }
 
+
+#[rocket::async_trait]
 impl<'a, 'r> FromRequest<'a, 'r> for SessionFull {
     type Error = SessionError;
 
-    fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
+    async fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
         let cookies = request.cookies();
-        let conn = request.guard::<AtomicDB>().unwrap();
+        let conn = request.guard::<AtomicDB>().await.unwrap();
         let session = match cookies.get("x-bearer-token") {
             Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => {
                 c.value().to_string()
@@ -81,12 +83,14 @@ impl<'a, 'r> FromRequest<'a, 'r> for SessionFull {
         })
     }
 }
+
+#[rocket::async_trait]
 impl<'a, 'r> FromRequest<'a, 'r> for Session {
     type Error = SessionError;
 
-    fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
+    async fn from_request(request: &'a Request<'r>) -> request::Outcome<Self, Self::Error> {
         let cookies = request.cookies();
-        let conn = request.guard::<AtomicDB>().unwrap();
+        let conn = request.guard::<AtomicDB>().await.unwrap();
         match cookies.get("x-bearer-token") {
             Some(c) if validate_auth(c.clone().value().to_string(), &*conn) => {
                 Outcome::Success(Session(c.value().to_string()))

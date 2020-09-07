@@ -4,11 +4,11 @@ use crate::auth::{delete_auth, get_uid, update_auth};
 use crate::routes::AtomicDB;
 use crate::user::get_by_login;
 use crate::user::model::UserLogin;
-use rocket::http::{Cookie, Cookies};
+use rocket::http::{Cookie, CookieJar};
 use rocket_contrib::json::{Json, JsonValue};
 
 #[post("/auth/login", format = "json", data = "<user>")]
-pub fn login(user: Json<UserLogin>, conn: AtomicDB, mut cookies: Cookies) -> JsonValue {
+pub async fn login(user: Json<UserLogin>, conn: AtomicDB, mut cookies: &CookieJar<'_>) -> JsonValue {
     let usr = match get_by_login(user.0, &*conn) {
         Ok(u) => u,
         Err(e) => return json!({ "error": e }),
@@ -33,7 +33,7 @@ pub fn login(user: Json<UserLogin>, conn: AtomicDB, mut cookies: Cookies) -> Jso
 }
 
 #[post("/auth/logout")]
-pub fn logout(session: Session, conn: AtomicDB, mut cookies: Cookies) {
+pub async fn logout(session: Session, conn: AtomicDB, mut cookies: &CookieJar<'_>) {
     let access = Cookie::build("x-bearer-token", "null")
         .http_only(true)
         .path("/")
@@ -48,7 +48,7 @@ pub fn logout(session: Session, conn: AtomicDB, mut cookies: Cookies) {
 }
 
 #[post("/auth/refresh")]
-pub fn refresh(session: SessionFull, conn: AtomicDB, mut cookies: Cookies) {
+pub async fn refresh(session: SessionFull, conn: AtomicDB, mut cookies: &CookieJar<'_>) {
     /*Unused!*/
     let token = update_auth(session, &*conn);
     let access = Cookie::build("x-bearer-token", token)
@@ -59,6 +59,6 @@ pub fn refresh(session: SessionFull, conn: AtomicDB, mut cookies: Cookies) {
 }
 
 #[get("/auth/valid")]
-pub fn validate(sess: Session, conn: AtomicDB) -> String {
+pub async fn validate(sess: Session, conn: AtomicDB) -> String {
     get_uid(sess.0, &*conn).to_string()
 }

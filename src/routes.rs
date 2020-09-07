@@ -8,17 +8,17 @@ pub struct AtomicDB(diesel::PgConnection);
 
 /** Generic Routes. **/
 #[get("/")]
-fn index() -> &'static str {
+async fn index() -> &'static str {
     "Hello, world!"
 }
 
 #[get("/test")]
-fn test_gen_id() -> String {
+async fn test_gen_id() -> String {
     //Html(test_replace())
     test_replace()
 }
 /** Starts Rocket and Mounts Routes. **/
-pub fn gen_routes() {
+pub async fn gen_routes() {
     let mut routes = routes!(index, test_gen_id);
     routes.append(&mut routes!(
         user::routes::get,
