@@ -6,7 +6,10 @@ edition = "2018"
 
 [dependencies]
 #Basic Webserver Stuff
-rocket = { git   = "https://github.com/SergioBenitez/Rocket" }
+rocket = { git = "https://github.com/SergioBenitez/Rocket" }
+
+# Multipart Processing
+multer = { version = "1.2.2", features = ["reader"] }
 
 # Serialization/Deserialization
 serde_json ={ version = "1.0.57", features = ["preserve_order"] }

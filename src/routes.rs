@@ -1,5 +1,6 @@
 use crate::auth;
 use crate::user;
+use crate::posts;
 use crate::utils::test_replace;
 
 /** Database Struct **/
@@ -31,6 +32,9 @@ pub fn gen_routes() -> rocket::Rocket {
         auth::routes::refresh,
         auth::routes::validate,
         auth::routes::logout
+    ));
+    routes.append(&mut routes!(
+        posts::routes::test
     ));
     #[cfg(feature = "communities")]
     routes.append(&mut routes!(/* Unused */));

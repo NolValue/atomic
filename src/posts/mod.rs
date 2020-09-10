@@ -1,2 +1,2 @@
-mod routes;
-mod model;
+pub mod routes;
+pub mod model;
