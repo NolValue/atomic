@@ -1,6 +1,7 @@
 -- Your SQL goes here
 CREATE TABLE follows(
-    source varchar(23) PRIMARY KEY,
-    target varchar(23),
-    created_on timestamp
+    id varchar(24) PRIMARY KEY,
+    source varchar(23) NOT NULL,
+    target varchar(23) NOT NULL,
+    created_on timestamp NOT NULL
 )

@@ -10,8 +10,9 @@ table! {
 }
 
 table! {
-    follows (source) {
-        source -> Varchar,
+    follows (id) {
+        id -> Varchar,
+        source -> Nullable<Varchar>,
         target -> Nullable<Varchar>,
         created_on -> Nullable<Timestamp>,
     }

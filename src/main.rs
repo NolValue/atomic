@@ -1,4 +1,3 @@
-#![feature(proc_macro_hygiene, decl_macro)]
 #[macro_use]
 extern crate rocket;
 #[macro_use]
@@ -16,7 +15,8 @@ mod routes;
 mod schema;
 mod user;
 mod utils;
-mod posts;
+mod post;
+mod follow;
 use routes::gen_routes;
 
 #[rocket::main]
