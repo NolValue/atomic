@@ -10,7 +10,7 @@ use rocket::futures::TryFutureExt;
 use rocket::data::ByteUnit;
 use regex::internal::Input;
 use rocket::outcome::Outcome::Success;
-use crate::utils::{set_timer_days, gen_id};
+use crate::utils::{set_timer_days, gen_id, parse_all};
 use rocket::futures::io::BufWriter;
 use rocket::tokio;
 use std::iter::once;
@@ -40,6 +40,17 @@ pub struct Post {
     pub created_on: NaiveDateTime
 }
 
+#[derive(AsChangeset, Serialize, Deserialize, Clone)]
+#[table_name = "posts"]
+pub struct PostAlterable {
+    pub id: String,
+    pub public: Option<bool>,
+    pub reshares: Option<bool>,
+    pub comments: Option<bool>,
+    pub content: Option<String>
+}
+
+
 #[rocket::async_trait]
 impl FromData for Post{
     type Error = PostError;
@@ -64,15 +75,28 @@ impl FromData for Post{
         while let Some(field) = multipart.next_field().await.unwrap() {
             let name = field.name();
             match name{
+                Some("id") => post.id = field.text().await.unwrap(),
                 Some("source_type") => post.source_type = Some(i16::from_str(field.text().await.unwrap().as_str()).unwrap()),
                 Some("source_id") => post.source_id = Some(field.text().await.unwrap()),
-                Some("content") => post.content = field.text().await.unwrap(),
+                Some("content") => post.content = parse_all(field.text().await.unwrap().as_str()),
                 Some("public") => post.public = Some(bool::from_str(field.text().await.unwrap().as_str()).unwrap()),
                 Some("reshares") => post.reshares = Some(bool::from_str(field.text().await.unwrap().as_str()).unwrap()),
                 Some("comments") => post.comments = Some(bool::from_str(field.text().await.unwrap().as_str()).unwrap()),
                 _ => return Outcome::Failure((Status::BadRequest, PostError::Unsupported))
             }
         }
+        if post.content == "".to_string() {
+            return Outcome::Failure((Status::BadRequest, PostError::InvalidData));
+        }
         return Success(post)
+    }
+}
+
+impl PostAlterable {
+    pub fn sanitize(&mut self) {
+        let content = self.content.as_ref().unwrap();
+        if self.content != None {
+            self.content = Some(parse_all(content.as_str()))
+        }
     }
 }

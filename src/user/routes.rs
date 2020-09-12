@@ -32,6 +32,5 @@ pub async fn update(mut user: Json<UserAlterable>, conn: AtomicDB, auth: Session
 pub async fn delete(sess: Session, conn: AtomicDB) -> JsonValue {
     let uid = sess.clone().get_uid(&*conn);
     let _rslt = delete_auth_by_user(uid.clone(), &*conn);
-    delete_user(uid.clone(), &*conn).to_string();
     json!({ "status": delete_user(uid.clone(), &*conn) })
 }

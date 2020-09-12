@@ -25,8 +25,7 @@ pub fn hash_pass(password: String) -> String {
     hash_encoded(password.as_ref(), salt.as_ref(), &config).unwrap()
 }
 
-pub fn test_replace() -> String {
-    let str = r#"<This> &is \**A* _test_"#;
+pub fn parse_all(str: &str) -> String{
     md_parse(html_parse(str).as_str())
 }
 

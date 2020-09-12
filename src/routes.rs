@@ -1,7 +1,6 @@
 use crate::auth;
 use crate::user;
 use crate::posts;
-use crate::utils::test_replace;
 
 /** Database Struct **/
 #[database("atomic_db")]
@@ -13,14 +12,9 @@ async fn index() -> &'static str {
     "Hello, world!"
 }
 
-#[get("/test")]
-async fn test_gen_id() -> String {
-    //Html(test_replace())
-    test_replace()
-}
 /** Starts Rocket and Mounts Routes. **/
 pub fn gen_routes() -> rocket::Rocket {
-    let mut routes = routes!(index, test_gen_id);
+    let mut routes = routes!(index);
     routes.append(&mut routes!(
         user::routes::get,
         user::routes::create,
@@ -34,7 +28,8 @@ pub fn gen_routes() -> rocket::Rocket {
         auth::routes::logout
     ));
     routes.append(&mut routes!(
-        posts::routes::test
+        posts::routes::create,
+        posts::routes::update,
     ));
     #[cfg(feature = "communities")]
     routes.append(&mut routes!(/* Unused */));
