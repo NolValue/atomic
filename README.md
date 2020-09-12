@@ -16,8 +16,8 @@ Atomic uses these crates in order to function:
 ### Todos
 
  - Auth/Login System (100% complete)
- - Add Post Creation (WIP)
- - Feed Generation 
+ - Add Post Creation (100% Complete)
+ - Feed Generation (WIP)
  - File Uploads
  - Optimizations and Cleaning for 1.0 Release
 
