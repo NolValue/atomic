@@ -8,7 +8,11 @@ use rocket::http::{Cookie, CookieJar};
 use rocket_contrib::json::{Json, JsonValue};
 
 #[post("/auth/login", format = "json", data = "<user>")]
-pub async fn login(user: Json<UserLogin>, conn: AtomicDB, mut cookies: &CookieJar<'_>) -> JsonValue {
+pub async fn login(
+    user: Json<UserLogin>,
+    conn: AtomicDB,
+    mut cookies: &CookieJar<'_>,
+) -> JsonValue {
     let usr = match get_by_login(user.0, &*conn) {
         Ok(u) => u,
         Err(e) => return json!({ "error": e }),

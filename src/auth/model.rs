@@ -55,7 +55,6 @@ impl Session {
     }
 }
 
-
 #[rocket::async_trait]
 impl<'a, 'r> FromRequest<'a, 'r> for SessionFull {
     type Error = SessionError;

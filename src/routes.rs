@@ -1,7 +1,7 @@
 use crate::auth;
-use crate::user;
-use crate::post;
 use crate::follow;
+use crate::post;
+use crate::user;
 
 /** Database Struct **/
 #[database("atomic_db")]
@@ -20,7 +20,9 @@ pub fn gen_routes() -> rocket::Rocket {
         user::routes::get,
         user::routes::create,
         user::routes::delete,
-        user::routes::update
+        user::routes::update,
+        user::routes::get_fling,
+        user::routes::get_fler
     ));
     routes.append(&mut routes!(
         auth::routes::login,
@@ -33,10 +35,7 @@ pub fn gen_routes() -> rocket::Rocket {
         post::routes::update,
         post::routes::delete
     ));
-    routes.append(&mut routes!(
-        follow::routes::create,
-        follow::routes::delete,
-    ));
+    routes.append(&mut routes!(follow::routes::create, follow::routes::delete,));
     #[cfg(feature = "communities")]
     routes.append(&mut routes!(/* Unused */));
     #[cfg(feature = "collections")]

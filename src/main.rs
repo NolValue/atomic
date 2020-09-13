@@ -11,12 +11,12 @@ extern crate chrono;
 #[macro_use]
 extern crate lazy_static;
 mod auth;
+mod follow;
+mod post;
 mod routes;
 mod schema;
 mod user;
 mod utils;
-mod post;
-mod follow;
 use routes::gen_routes;
 
 #[rocket::main]

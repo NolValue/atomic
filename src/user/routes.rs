@@ -1,7 +1,8 @@
 use super::get_by_id;
 use super::model::UserLogin;
-use crate::auth::model::Session;
 use crate::auth::delete_auth_by_user;
+use crate::auth::model::Session;
+use crate::follow::{get_followers, get_following};
 use crate::routes::AtomicDB;
 use crate::user::model::UserAlterable;
 use crate::user::{create_user, delete_user, update_user};
@@ -33,4 +34,14 @@ pub async fn delete(sess: Session, conn: AtomicDB) -> JsonValue {
     let uid = sess.clone().get_uid(&*conn);
     let _rslt = delete_auth_by_user(uid.clone(), &*conn);
     json!({ "status": delete_user(uid.clone(), &*conn) })
+}
+
+#[get("/user/following/<id>")]
+pub async fn get_fling(id: String, conn: AtomicDB) -> JsonValue {
+    json!({"following": get_following(id, &*conn)})
+}
+
+#[get("/user/followers/<id>")]
+pub async fn get_fler(id: String, conn: AtomicDB) -> JsonValue {
+    json!({"following": get_followers(id, &*conn)})
 }

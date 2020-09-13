@@ -12,9 +12,9 @@ table! {
 table! {
     follows (id) {
         id -> Varchar,
-        source -> Nullable<Varchar>,
-        target -> Nullable<Varchar>,
-        created_on -> Nullable<Timestamp>,
+        source -> Varchar,
+        target -> Varchar,
+        created_on -> Timestamp,
     }
 }
 
@@ -56,10 +56,4 @@ table! {
 joinable!(auths -> users (uid));
 joinable!(posts -> users (poster));
 
-allow_tables_to_appear_in_same_query!(
-    auths,
-    follows,
-    media,
-    posts,
-    users,
-);
+allow_tables_to_appear_in_same_query!(auths, follows, media, posts, users,);

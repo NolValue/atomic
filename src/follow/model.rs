@@ -6,6 +6,5 @@ pub struct Follow {
     pub id: String,
     pub source: String,
     pub target: String,
-    pub created_on: NaiveDateTime
+    pub created_on: NaiveDateTime,
 }
-

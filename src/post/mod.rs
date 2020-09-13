@@ -1,9 +1,9 @@
-pub mod routes;
 pub mod model;
+pub mod routes;
 use super::schema::posts::dsl::*;
-use model::{Post, PostAlterable};
-use diesel::{PgConnection, RunQueryDsl, QueryDsl, ExpressionMethods};
 use crate::utils::gen_id;
+use diesel::{ExpressionMethods, PgConnection, QueryDsl, RunQueryDsl};
+use model::{Post, PostAlterable};
 
 pub fn get_uid(pid: String, conn: &PgConnection) -> String {
     posts
@@ -28,7 +28,7 @@ pub fn delete_post(pid: String, conn: &PgConnection) -> i32 {
     }
 }
 
-pub fn update_post(pst: PostAlterable, pid: String,conn: &PgConnection) -> i32 {
+pub fn update_post(pst: PostAlterable, pid: String, conn: &PgConnection) -> i32 {
     return match diesel::update(posts.filter(id.eq(pid)))
         .set(pst)
         .execute(conn)
