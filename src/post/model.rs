@@ -18,6 +18,7 @@ use std::convert::Infallible;
 use std::io::{BufReader, Bytes};
 use std::iter::once;
 use std::str::FromStr;
+use crate::media::model::{MediaType, Poll};
 
 pub enum PostError {
     InvalidData,
@@ -71,8 +72,14 @@ impl FromData for Post {
             content: "".to_string(),
             created_on: set_timer_days(0),
         };
+        //let mut media: Vec<Box<dyn MediaType>>;
         while let Some(field) = multipart.next_field().await.unwrap() {
             let name = field.name();
+            //let mut poll  = false;
+            let content_type = field.content_type().unwrap();
+            if content_type.type_() == "image"{
+                //Parse and Store -- soon(tm)
+            }
             match name {
                 Some("id") => post.id = field.text().await.unwrap(),
                 Some("source_type") => {
@@ -93,13 +100,26 @@ impl FromData for Post {
                     post.comments =
                         Some(bool::from_str(field.text().await.unwrap().as_str()).unwrap())
                 }
-                _ => return Outcome::Failure((Status::BadRequest, PostError::Unsupported)),
+                /*Some("poll") => {
+                    if !poll {
+                        let p: Poll = serde_json::from_str(field.text().await.unwrap().as_str()).unwrap();
+                        //Max Options of 4
+                        if p.options.len() == 0 || p.options.len() > 4{
+                            return Outcome::Failure((Status::BadRequest, PostError::InvalidData))
+                        }
+                        media.push(
+                            Box::new(p)
+                        );
+                        poll = true;
+                    }
+                }*/
+                _ => println!("Unsupported Type: {}", name.unwrap())
             }
         }
         if post.content == "".to_string() {
             return Outcome::Failure((Status::BadRequest, PostError::InvalidData));
         }
-        return Success(post);
+        Outcome::Success(post)
     }
 }
 

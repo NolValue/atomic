@@ -17,6 +17,7 @@ mod routes;
 mod schema;
 mod user;
 mod utils;
+mod media;
 use routes::gen_routes;
 
 #[rocket::main]

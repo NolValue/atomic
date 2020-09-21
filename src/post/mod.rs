@@ -28,6 +28,13 @@ pub fn delete_post(pid: String, conn: &PgConnection) -> i32 {
     }
 }
 
+pub fn delete_by_uid(uid: String, conn: &PgConnection) -> i32 {
+    match diesel::delete(posts.filter(poster.eq(uid))).execute(&*conn) {
+        Ok(_t) => 200,
+        Err(_e) => 500,
+    }
+}
+
 pub fn update_post(pst: PostAlterable, pid: String, conn: &PgConnection) -> i32 {
     return match diesel::update(posts.filter(id.eq(pid)))
         .set(pst)

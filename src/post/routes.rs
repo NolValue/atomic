@@ -7,7 +7,7 @@ use crate::routes::AtomicDB;
 use rocket_contrib::json::{Json, JsonValue};
 
 #[post("/post", data = "<post>")]
-pub async fn create(mut post: Post, conn: AtomicDB, auth: Session) -> JsonValue {
+pub async fn create(post: Post, conn: AtomicDB, auth: Session) -> JsonValue {
     json!({"status": create_post(post, &*conn)})
 }
 

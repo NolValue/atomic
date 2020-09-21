@@ -18,7 +18,7 @@ Atomic uses these crates in order to function:
  - Auth/Login System (100% complete)
  - Add Post Creation (100% Complete)
  - Feed Generation (WIP)
- - File Uploads
+ - File Uploads (WIP)
  - Optimizations and Cleaning for 1.0 Release
 
 License

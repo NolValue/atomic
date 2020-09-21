@@ -2,12 +2,13 @@ use super::get_by_id;
 use super::model::UserLogin;
 use crate::auth::delete_auth_by_user;
 use crate::auth::model::Session;
-use crate::follow::{get_followers, get_following};
+use crate::follow::{get_followers, get_following, delete_f_by_uid};
 use crate::routes::AtomicDB;
 use crate::user::model::UserAlterable;
 use crate::user::{create_user, delete_user, update_user};
 use diesel::result::Error;
 use rocket_contrib::json::{Json, JsonValue};
+use crate::post::delete_by_uid;
 
 /** User Routes. **/
 #[get("/user/get/<uid>")]
@@ -32,7 +33,9 @@ pub async fn update(mut user: Json<UserAlterable>, conn: AtomicDB, auth: Session
 #[delete("/user")]
 pub async fn delete(sess: Session, conn: AtomicDB) -> JsonValue {
     let uid = sess.clone().get_uid(&*conn);
-    let _rslt = delete_auth_by_user(uid.clone(), &*conn);
+    delete_auth_by_user(uid.clone(), &*conn);
+    delete_by_uid(uid.clone(), &*conn);
+    delete_f_by_uid(uid.clone(), &*conn);
     json!({ "status": delete_user(uid.clone(), &*conn) })
 }
 
